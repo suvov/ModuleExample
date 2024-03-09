@@ -1,0 +1,12 @@
+--allman false
+--indent 2
+--commas inline
+
+--disable wrapMultilineStatementBraces
+--disable numberFormatting
+--disable redundantClosure
+--disable unusedArguments
+--disable linebreakAtEndOfFile
+--disable redundantVoidReturnType
+--disable redundantSelf
+--disable conditionalAssignment
