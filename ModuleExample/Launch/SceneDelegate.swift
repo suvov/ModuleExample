@@ -8,5 +8,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     let window = UIWindow(windowScene: windowScene)
     self.window = window
     window.makeKeyAndVisible()
+    let vc = CountryList.createModule()
+    let nvc = UINavigationController(rootViewController: vc)
+    window.rootViewController = nvc
   }
 }
