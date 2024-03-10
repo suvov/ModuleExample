@@ -19,6 +19,7 @@ extension CountryList {
   }
 
   struct ListModel: Equatable {
+    let header: String?
     let items: [ItemModel]
     let isLoadingNextPage: Bool
   }
@@ -49,6 +50,15 @@ extension CountryList.State {
       return model.isLoadingNextPage
     default:
       return false
+    }
+  }
+
+  var header: String? {
+    switch screenState {
+    case let .list(model):
+      return model.header
+    default:
+      return nil
     }
   }
 }

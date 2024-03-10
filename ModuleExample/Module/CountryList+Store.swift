@@ -43,6 +43,13 @@ extension CountryList {
         .filter { [unowned self] action in
           Self.shouldIncludeAction(action, state: self.state)
         }
+        /* Side effects */
+        .handleEvents(receiveOutput: { [unowned self] action in
+          /* Dispatch event after action if needed */
+          if let event = Self.createEventWithAction(action, state: self.state) {
+            self.events.send(event)
+          }
+        })
         /* Reduce */
         .map { [unowned self] action in
           self.state.reduced(with: action)
@@ -59,6 +66,8 @@ extension CountryList {
         return actionCreator.loadFirstPage()
       case .loadNext:
         return actionCreator.loadNextPage(state.pagination.next)
+      case let .loadHeader(totalCount):
+        return actionCreator.loadHeader(totalCount: totalCount)
       }
     }
   }
@@ -90,9 +99,29 @@ extension CountryList.Store {
       if payload.page != state.pagination.next {
         return false
       }
+    /* Ignore loaded header if loading whole screen. Might happen after reload. */
+    case .didLoadHeader:
+      if state.screenState == .loading {
+        return false
+      }
     default:
       break
     }
     return true
+  }
+
+  static func createEventWithAction(
+    _ action: CountryList.Action, state: CountryList.State
+  ) -> CountryList.Event? {
+    switch action {
+    /* Load header after loaded page with total count */
+    case let .didLoadPage(payload):
+      guard state.header == nil else {
+        return nil
+      }
+      return .loadHeader(payload.totalCount)
+    default:
+      return nil
+    }
   }
 }

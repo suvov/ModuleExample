@@ -41,4 +41,48 @@ final class CountryListStoreStaticTests: XCTestCase {
     // Then
     XCTAssertFalse(shouldInclude)
   }
+
+  func testExcludesDidLoadHeaderActionIfLoadingWholeScreen() {
+    // Given
+    let state = CountryList.State.initial.reduced(with: .loadFirstPage)
+    
+    // When
+    let shouldInclude = CountryList.Store.shouldIncludeAction(
+      .didLoadHeader(""), state: state
+    )
+    
+    // Then
+    XCTAssertFalse(shouldInclude)
+  }
+  
+  func testCreatesLoadHeaderEventAfterDidLoadPageActionIfNoHeader() {
+    // Given
+    let state = CountryList.State.initial.reduced(
+      with: .didLoadPage(.init(page: 0, totalCount: 1, items: []))
+    )
+    let expected = CountryList.Event.loadHeader(1)
+    
+    // When
+    let event = CountryList.Store.createEventWithAction(
+      .didLoadPage(.init(page: 0, totalCount: 1, items: [])), state: state
+    )
+    
+    // Then
+    XCTAssertEqual(expected, event)
+  }
+  
+  func testDoesntCreateLoadHeaderEventAfterDidLoadPageActionIfHeaderPresent() {
+    // Given
+    let state = CountryList.State.initial
+      .reduced(with: .didLoadPage(.init(page: 0, totalCount: 1, items: [])))
+      .reduced(with: .didLoadHeader(""))
+        
+    // When
+    let event = CountryList.Store.createEventWithAction(
+      .didLoadPage(.init(page: 0, totalCount: 1, items: [])), state: state
+    )
+    
+    // Then
+    XCTAssertNil(event)
+  }
 }

@@ -5,6 +5,7 @@ extension CountryList {
     case loadFirstPage
     case loadNextPage
     case didLoadPage(PageInfo)
+    case didLoadHeader(String?)
     case error(String)
   }
 
@@ -27,6 +28,8 @@ extension CountryList.Action: CustomDebugStringConvertible {
       description = "loadNextPage"
     case let .didLoadPage(pageInfo):
       description = "didLoadPage \(pageInfo)"
+    case .didLoadHeader:
+      description = "didLoadHeader"
     case .error:
       description = "error"
     }

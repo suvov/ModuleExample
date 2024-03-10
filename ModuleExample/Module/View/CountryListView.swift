@@ -7,6 +7,12 @@ struct CountryListView: View {
   var body: some View {
     ScrollView {
       LazyVStack(spacing: 8) {
+        if let header = model.header {
+          Text(header)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(.secondary)
+            .font(.subheadline)
+        }
         ForEach(model.items, id: \.id) { item in
           CountryListItemView(model: item)
             .frame(minHeight: 44)
@@ -48,23 +54,30 @@ private extension CountryList.ItemModel {
     CountryListView(model: .stub, onEvent: { _ in })
   }
 
+  #Preview("Header") {
+    CountryListView(model: .stubHeader, onEvent: { _ in })
+  }
+
   #Preview("Loading next") {
     CountryListView(model: .stubLoadingNext, onEvent: { _ in })
   }
 
   extension CountryList.ListModel {
     static var stub: Self {
-      .init(items: (0 ... 10).map { .stub($0) },
+      .init(header: nil,
+            items: (0 ... 10).map { .stub($0) },
             isLoadingNextPage: false)
     }
 
     static var stubHeader: Self {
-      .init(items: (0 ... 10).map { .stub($0) },
+      .init(header: "Header",
+            items: (0 ... 10).map { .stub($0) },
             isLoadingNextPage: false)
     }
 
     static var stubLoadingNext: Self {
-      .init(items: (0 ... 10).map { .stub($0) },
+      .init(header: nil,
+            items: (0 ... 10).map { .stub($0) },
             isLoadingNextPage: true)
     }
   }

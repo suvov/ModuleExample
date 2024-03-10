@@ -2,6 +2,7 @@ extension CountryList {
   enum Event: Equatable {
     case loadFirst
     case loadNext
+    case loadHeader(Int)
   }
 }
 
@@ -15,6 +16,8 @@ extension CountryList.Event: CustomDebugStringConvertible {
       description = "loadFirst"
     case .loadNext:
       description = "loadNext"
+    case .loadHeader:
+      description = "loadHeader"
     }
     return "Event \(description)"
   }

@@ -13,6 +13,8 @@
 		E782EBBE2B9D91E8008B0B2B /* CountryListErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E782EBBA2B9D91E8008B0B2B /* CountryListErrorView.swift */; };
 		E782EBBF2B9D91E8008B0B2B /* CountryListLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E782EBBB2B9D91E8008B0B2B /* CountryListLoadingView.swift */; };
 		E782EBC12B9D9246008B0B2B /* CountryList+Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E782EBC02B9D9246008B0B2B /* CountryList+Screen.swift */; };
+		E782EBC32B9DA133008B0B2B /* UNService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E782EBC22B9DA133008B0B2B /* UNService.swift */; };
+		E782EBC52B9DA49B008B0B2B /* UNServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E782EBC42B9DA49B008B0B2B /* UNServiceMock.swift */; };
 		E7A622012B9C482300802183 /* CountryList+Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A622002B9C482300802183 /* CountryList+Event.swift */; };
 		E7A622082B9C483000802183 /* CountryList+State.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A622022B9C483000802183 /* CountryList+State.swift */; };
 		E7A622092B9C483000802183 /* CountryList+Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A622032B9C483000802183 /* CountryList+Action.swift */; };
@@ -52,6 +54,8 @@
 		E782EBBA2B9D91E8008B0B2B /* CountryListErrorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountryListErrorView.swift; sourceTree = "<group>"; };
 		E782EBBB2B9D91E8008B0B2B /* CountryListLoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountryListLoadingView.swift; sourceTree = "<group>"; };
 		E782EBC02B9D9246008B0B2B /* CountryList+Screen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CountryList+Screen.swift"; sourceTree = "<group>"; };
+		E782EBC22B9DA133008B0B2B /* UNService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UNService.swift; sourceTree = "<group>"; };
+		E782EBC42B9DA49B008B0B2B /* UNServiceMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UNServiceMock.swift; sourceTree = "<group>"; };
 		E7A622002B9C482300802183 /* CountryList+Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CountryList+Event.swift"; sourceTree = "<group>"; };
 		E7A622022B9C483000802183 /* CountryList+State.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CountryList+State.swift"; sourceTree = "<group>"; };
 		E7A622032B9C483000802183 /* CountryList+Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CountryList+Action.swift"; sourceTree = "<group>"; };
@@ -127,6 +131,7 @@
 			children = (
 				E7A622132B9C4A8A00802183 /* CountryService.swift */,
 				E7A622112B9C4A8A00802183 /* CountriesResponse.swift */,
+				E782EBC22B9DA133008B0B2B /* UNService.swift */,
 				E7A622122B9C4A8A00802183 /* countries.json */,
 			);
 			path = Service;
@@ -141,6 +146,7 @@
 				E7A6222A2B9C4D4B00802183 /* CountryListActionCreatorTests.swift */,
 				E7A6222C2B9C4D5300802183 /* CountryListActionCreatorMock.swift */,
 				E7A622322B9C4DD500802183 /* CountryServiceMock.swift */,
+				E782EBC42B9DA49B008B0B2B /* UNServiceMock.swift */,
 			);
 			path = ModuleExampleTests;
 			sourceTree = "<group>";
@@ -289,6 +295,7 @@
 				E7A622292B9C4B9300802183 /* CountryListReducerTests.swift in Sources */,
 				E7A622332B9C4DD500802183 /* CountryServiceMock.swift in Sources */,
 				E7A6222B2B9C4D4B00802183 /* CountryListActionCreatorTests.swift in Sources */,
+				E782EBC52B9DA49B008B0B2B /* UNServiceMock.swift in Sources */,
 				E7A6222F2B9C4D5A00802183 /* CountryListStoreTests.swift in Sources */,
 				E7A6222D2B9C4D5300802183 /* CountryListActionCreatorMock.swift in Sources */,
 			);
@@ -310,6 +317,7 @@
 				E7A622082B9C483000802183 /* CountryList+State.swift in Sources */,
 				E7A6220F2B9C487E00802183 /* CountryList+Module.swift in Sources */,
 				E782EBC12B9D9246008B0B2B /* CountryList+Screen.swift in Sources */,
+				E782EBC32B9DA133008B0B2B /* UNService.swift in Sources */,
 				E782EBBD2B9D91E8008B0B2B /* CountryListView.swift in Sources */,
 				E7DCBFE32B4D460E00754DAD /* AppDelegate.swift in Sources */,
 				E77A5FB82B6A7C0400FE92B0 /* SceneDelegate.swift in Sources */,

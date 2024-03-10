@@ -21,13 +21,14 @@ final class CountryListReducerTests: XCTestCase {
     let loadedFirst = CountryList.State.initial.reduced(
       with: .didLoadPage(.init(page: 0, totalCount: 1, items: items))
     )
+    let loadedHeader = loadedFirst.reduced(with: .didLoadHeader(""))
     let expected = CountryList.State(
-      pagination: loadedFirst.pagination,
-      screenState: .list(.init(items: items, isLoadingNextPage: true))
+      pagination: loadedHeader.pagination,
+      screenState: .list(.init(header: "", items: items, isLoadingNextPage: true))
     )
     
     // When
-    let result = loadedFirst.reduced(with: .loadNextPage)
+    let result = loadedHeader.reduced(with: .loadNextPage)
     
     //Then
     XCTAssertEqual(expected, result)
@@ -39,7 +40,7 @@ final class CountryListReducerTests: XCTestCase {
     let loadingFirst = CountryList.State.initial.reduced( with: .loadFirstPage)
     let expected = CountryList.State(
       pagination: .init(totalCount: 1, currentPage: 0),
-      screenState: .list(.init(items: items, isLoadingNextPage: false))
+      screenState: .list(.init(header: nil, items: items, isLoadingNextPage: false))
     )
     
     // When
@@ -59,7 +60,8 @@ final class CountryListReducerTests: XCTestCase {
     let expected = CountryList.State(
       pagination: .init(totalCount: 2, currentPage: 1),
       screenState: .list(
-        .init(items: firstPageItems + secondPageItems,
+        .init(header: nil,
+              items: firstPageItems + secondPageItems,
               isLoadingNextPage: false)
       )
     )
@@ -70,6 +72,24 @@ final class CountryListReducerTests: XCTestCase {
         .init(page: 1, totalCount: 2, items: secondPageItems)
       )
     )
+    
+    //Then
+    XCTAssertEqual(expected, result)
+  }
+  
+  func testDidLoadHeader() {
+    // Given
+    let items = [CountryList.ItemModel(id: 0, name: "")]
+    let loadedFirst = CountryList.State.initial.reduced(
+      with: .didLoadPage(.init(page: 0, totalCount: 1, items: items))
+    )
+    let expected = CountryList.State(
+      pagination: .init(totalCount: 1, currentPage: 0),
+      screenState: .list(.init(header: "header", items: items, isLoadingNextPage: false))
+    )
+    
+    // When
+    let result = loadedFirst.reduced(with: .didLoadHeader("header"))
     
     //Then
     XCTAssertEqual(expected, result)
