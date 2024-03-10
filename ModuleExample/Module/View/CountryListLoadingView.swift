@@ -15,6 +15,7 @@ extension CountryList.ListModel {
       CountryList.ItemModel(id: $0, name: "Placeholder")
     }
     return CountryList.ListModel(
+      header: nil,
       items: items,
       isLoadingNextPage: false
     )

@@ -10,6 +10,7 @@ extension CountryList.State {
       )
     case .loadNextPage:
       let listModel = CountryList.ListModel(
+        header: header,
         items: items,
         isLoadingNextPage: true
       )
@@ -19,12 +20,23 @@ extension CountryList.State {
       )
     case let .didLoadPage(pageInfo):
       let listModel = CountryList.ListModel(
+        header: header,
         items: items + pageInfo.items,
         isLoadingNextPage: false
       )
       let pagination = CountryList.Pagination(
         totalCount: pageInfo.totalCount,
         currentPage: pageInfo.page
+      )
+      return .init(
+        pagination: pagination,
+        screenState: .list(listModel)
+      )
+    case let .didLoadHeader(header):
+      let listModel = CountryList.ListModel(
+        header: header,
+        items: items,
+        isLoadingNextPage: isLoadingNextPage
       )
       return .init(
         pagination: pagination,

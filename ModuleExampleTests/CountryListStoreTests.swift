@@ -9,7 +9,7 @@ final class CountryListStoreTests: XCTestCase {
     subscriptions = []
   }
   
-  func testStartsLoadingLoadsFirstPageWhenLoadFirst() {
+  func testStartsLoadingLoadsFirstPageLoadsHeaderWhenLoadFirst() {
     // Given
     var actionCreator = CountryListActionCreatorMock()
     let firstPage = 0
@@ -17,6 +17,8 @@ final class CountryListStoreTests: XCTestCase {
     actionCreator.loadFirstPageResult = .didLoadPage(
       .init(page: firstPage, totalCount: totalCount, items: [])
     )
+    let header = "Header"
+    actionCreator.loadHeaderResult = .didLoadHeader(header)
     
     // Expected states
     let initial = CountryList.State.initial
@@ -24,13 +26,14 @@ final class CountryListStoreTests: XCTestCase {
     let loadedFirst = loadingFirst.reduced(with:
         .didLoadPage(.init(page: firstPage, totalCount: totalCount, items: []))
     )
+    let loadedHeader = loadedFirst.reduced(with: .didLoadHeader(header))
     
     let store = CountryList.Store(
       initialState: initial, actionCreator: actionCreator
     )
     
     let expectedStates = [
-      initial, loadingFirst, loadedFirst
+      initial, loadingFirst, loadedFirst, loadedHeader
     ]
     
     var receivedStates = [CountryList.State]()
@@ -58,11 +61,12 @@ final class CountryListStoreTests: XCTestCase {
     actionCreator.loadNextPageResult = .didLoadPage(
       .init(page: nextPage, totalCount: totalCount, items: [])
     )
+    actionCreator.loadHeaderResult = .didLoadHeader("")
     
     // Expected states
     let loadedFirst = CountryList.State.initial.reduced(
       with: .didLoadPage(
-        .init(page: firstPage, 
+        .init(page: firstPage,
               totalCount: totalCount,
               items: [.init(id: 1, name: "")])
       )
@@ -71,12 +75,13 @@ final class CountryListStoreTests: XCTestCase {
     let loadedNext = loadingNext.reduced(
       with: .didLoadPage(.init(page: nextPage, totalCount: totalCount, items: []))
     )
+    let loadedHeader = loadedNext.reduced(with: .didLoadHeader(""))
     
     let store = CountryList.Store(
       initialState: loadedFirst, actionCreator: actionCreator
     )
     
-    let expectedStates = [loadedFirst, loadingNext, loadedNext]
+    let expectedStates = [loadedFirst, loadingNext, loadedNext, loadedHeader]
     
     var receivedStates = [CountryList.State]()
     
@@ -160,6 +165,7 @@ final class CountryListStoreTests: XCTestCase {
     // Given
     var actionCreator = CountryListActionCreatorMock()
     actionCreator.loadFirstPageResult = .didLoadPage(.init(page: 0, totalCount: 1, items: []))
+    actionCreator.loadHeaderResult = .didLoadHeader("")
     
     // Expected states
     let loadingNext = CountryList.State.initial.reduced(with: .loadNextPage)
@@ -167,7 +173,8 @@ final class CountryListStoreTests: XCTestCase {
     let loadedFirst = loadingFirst.reduced(
       with: .didLoadPage(.init(page: 0, totalCount: 1, items: []))
     )
-    let expectedStates = [loadingNext, loadingFirst, loadedFirst]
+    let loadedHeader = loadedFirst.reduced(with: .didLoadHeader(""))
+    let expectedStates = [loadingNext, loadingFirst, loadedFirst, loadedHeader]
     
     var receivedStates = [CountryList.State]()
     

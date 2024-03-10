@@ -15,8 +15,9 @@ final class CountryListActionCreatorTests: XCTestCase {
     countryService.countriesResult = .init(
       page: 0, totalCount: 0, countries: []
     )
+    let unService = UNServiceMock()
     let actionCreator = CountryList.ActionCreator(
-      countryService: countryService
+      countryService: countryService, unService: unService
     )
     let expectedActions: [CountryList.Action] = [
       .loadFirstPage,
@@ -43,8 +44,9 @@ final class CountryListActionCreatorTests: XCTestCase {
     countryService.countriesResult = .init(
       page: 1, totalCount: 0, countries: []
     )
+    let unService = UNServiceMock()
     let actionCreator = CountryList.ActionCreator(
-      countryService: countryService
+      countryService: countryService, unService: unService
     )
     let expectedActions: [CountryList.Action] = [
       .loadNextPage,
@@ -55,6 +57,35 @@ final class CountryListActionCreatorTests: XCTestCase {
     
     // When
     actionCreator.loadNextPage(1)
+      .sink { action in
+        receivedActions.append(action)
+      }
+      .store(in: &subscriptions)
+    
+    // Then
+    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)
+    XCTAssertEqual(expectedActions, receivedActions)
+  }
+  
+  func testLoadHeader() {
+    // Given
+    let countryService = CountryServiceMock()
+    let totalCount = 1
+    let unCount = 2
+    var unService = UNServiceMock()
+    unService.countResult = unCount
+
+    let actionCreator = CountryList.ActionCreator(
+      countryService: countryService, unService: unService
+    )
+    let expectedActions: [CountryList.Action] = [
+      .didLoadHeader(CountryList.Adapter.adaptedHeader(totalCount, unCount))
+    ]
+    
+    var receivedActions = [CountryList.Action]()
+    
+    // When
+    actionCreator.loadHeader(totalCount: totalCount)
       .sink { action in
         receivedActions.append(action)
       }

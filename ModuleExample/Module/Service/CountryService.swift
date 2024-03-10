@@ -14,7 +14,7 @@ final class CountryService: CountryServiceProtocol {
     return countries
   }()
 
-  private let scheduler = DispatchQueue(label: "service-queue")
+  private let scheduler = DispatchQueue(label: "co-service-queue")
 
   private let pageSize = 25
 
