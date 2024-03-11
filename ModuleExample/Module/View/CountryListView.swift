@@ -2,7 +2,7 @@ import SwiftUI
 
 struct CountryListView: View {
   let model: CountryList.ListModel
-  let onEvent: (CountryList.Event) -> Void
+  let onAction: (CountryList.Action) -> Void
 
   var body: some View {
     ScrollView {
@@ -18,7 +18,7 @@ struct CountryListView: View {
             .frame(minHeight: 44)
             .onAppear {
               if item == model.items.last {
-                onEvent(.loadNext)
+                onAction(.loadNextPage)
               }
             }
         }
@@ -32,7 +32,7 @@ struct CountryListView: View {
       .toolbar {
         Button("Reload",
                systemImage: "arrow.clockwise") {
-          onEvent(.loadFirst)
+          onAction(.loadFirstPage)
         }
         .tint(.primary)
         .unredacted()
@@ -51,15 +51,15 @@ private extension CountryList.ItemModel {
 
 #if DEBUG
   #Preview("Loaded") {
-    CountryListView(model: .stub, onEvent: { _ in })
+    CountryListView(model: .stub, onAction: { _ in })
   }
 
   #Preview("Header") {
-    CountryListView(model: .stubHeader, onEvent: { _ in })
+    CountryListView(model: .stubHeader, onAction: { _ in })
   }
 
   #Preview("Loading next") {
-    CountryListView(model: .stubLoadingNext, onEvent: { _ in })
+    CountryListView(model: .stubLoadingNext, onAction: { _ in })
   }
 
   extension CountryList.ListModel {

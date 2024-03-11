@@ -13,13 +13,13 @@ extension CountryList {
         case .loading:
           CountryListLoadingView()
         case let .list(model):
-          CountryListView(model: model, onEvent: store.onEvent)
+          CountryListView(model: model, onAction: store.dispatchAction)
         case let .error(description):
-          CountryListErrorView(description: description, onEvent: store.onEvent)
+          CountryListErrorView(description: description, onAction: store.dispatchAction)
         }
       }
       .onAppear {
-        store.onEvent(.loadFirst)
+        store.dispatchAction(.loadFirstPage)
       }
     }
   }
@@ -49,6 +49,6 @@ extension CountryList {
     }
 
     let state: CountryList.State
-    func onEvent(_ event: CountryList.Event) {}
+    func dispatchAction(_ action: CountryList.Action) {}
   }
 #endif

@@ -32,6 +32,8 @@ extension CountryList.State {
         pagination: pagination,
         screenState: .list(listModel)
       )
+    case .loadHeader:
+      return self
     case let .didLoadHeader(header):
       let listModel = CountryList.ListModel(
         header: header,

@@ -3,7 +3,7 @@ import Foundation
 
 protocol CountryListStoreProtocol: ObservableObject {
   var state: CountryList.State { get }
-  func onEvent(_ event: CountryList.Event)
+  func dispatchAction(_ action: CountryList.Action)
 }
 
 extension CountryList {
@@ -21,22 +21,22 @@ extension CountryList {
     @Published
     var state: State
 
-    func onEvent(_ event: CountryList.Event) {
-      events.send(event)
+    func dispatchAction(_ action: Action) {
+      actions.send(action)
     }
 
-    private let events = PassthroughSubject<Event, Never>()
+    private let actions = PassthroughSubject<Action, Never>()
 
     private func start() {
-      subscription = events
+      subscription = actions
         .receive(on: DispatchQueue.main)
-        /* Filter events */
-        .filter { [unowned self] event in
-          Self.shouldIncludeEvent(event, state: self.state)
+        /* Filter actions */
+        .filter { [unowned self] action in
+          Self.shouldIncludeAction(action, state: self.state)
         }
-        /* Create actions from events */
-        .flatMap { [unowned self] event in
-          self.createAction(with: event)
+        /* Create async actions */
+        .flatMap { [unowned self] action in
+          self.createAsyncAction(with: action)
             .receive(on: DispatchQueue.main)
         }
         /* Filter actions */
@@ -45,9 +45,9 @@ extension CountryList {
         }
         /* Side effects */
         .handleEvents(receiveOutput: { [unowned self] action in
-          /* Dispatch event after action if needed */
-          if let event = Self.createEventWithAction(action, state: self.state) {
-            self.events.send(event)
+          /* Dispatch action after action if needed */
+          if let action = Self.createActionWithAction(action, state: self.state) {
+            self.actions.send(action)
           }
         })
         /* Reduce */
@@ -60,40 +60,32 @@ extension CountryList {
         }
     }
 
-    private func createAction(with event: Event) -> AnyPublisher<Action, Never> {
-      switch event {
-      case .loadFirst:
+    private func createAsyncAction(with action: Action) -> AnyPublisher<Action, Never> {
+      switch action {
+      case .loadFirstPage:
         return actionCreator.loadFirstPage()
-      case .loadNext:
+      case .loadNextPage:
         return actionCreator.loadNextPage(state.pagination.next)
       case let .loadHeader(totalCount):
         return actionCreator.loadHeader(totalCount: totalCount)
+      default:
+        return Empty<Action, Never>().eraseToAnyPublisher()
       }
     }
   }
 }
 
 extension CountryList.Store {
-  static func shouldIncludeEvent(
-    _ event: CountryList.Event, state: CountryList.State
-  ) -> Bool {
-    switch event {
-    /* Ignore load next if already loading or loaded all */
-    case .loadNext:
-      if state.isLoadingNextPage ||
-        state.items.count >= state.pagination.totalCount {
-        return false
-      }
-    default:
-      break
-    }
-    return true
-  }
-
   static func shouldIncludeAction(
     _ action: CountryList.Action, state: CountryList.State
   ) -> Bool {
     switch action {
+    /* Ignore load next if already loading or loaded all */
+    case .loadNextPage:
+      if state.isLoadingNextPage ||
+        state.items.count >= state.pagination.totalCount {
+        return false
+      }
     /* Ignore loaded page if it's not the one expected. Might happen after reload */
     case let .didLoadPage(payload):
       if payload.page != state.pagination.next {
@@ -110,9 +102,9 @@ extension CountryList.Store {
     return true
   }
 
-  static func createEventWithAction(
+  static func createActionWithAction(
     _ action: CountryList.Action, state: CountryList.State
-  ) -> CountryList.Event? {
+  ) -> CountryList.Action? {
     switch action {
     /* Load header after loaded page with total count */
     case let .didLoadPage(payload):

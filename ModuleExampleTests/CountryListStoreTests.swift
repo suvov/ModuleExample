@@ -45,7 +45,7 @@ final class CountryListStoreTests: XCTestCase {
       .store(in: &subscriptions)
     
     // When
-    store.onEvent(.loadFirst)
+    store.dispatchAction(.loadFirstPage)
     
     //Then
     _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)
@@ -92,7 +92,7 @@ final class CountryListStoreTests: XCTestCase {
       .store(in: &subscriptions)
     
     // When
-    store.onEvent(.loadNext)
+    store.dispatchAction(.loadNextPage)
     
     //Then
     _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)
@@ -126,7 +126,7 @@ final class CountryListStoreTests: XCTestCase {
       .store(in: &subscriptions)
     
     // When
-    store.onEvent(.loadNext)
+    store.dispatchAction(.loadNextPage)
     
     //Then
     _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)
@@ -154,7 +154,7 @@ final class CountryListStoreTests: XCTestCase {
       .store(in: &subscriptions)
     
     // When
-    store.onEvent(.loadNext)
+    store.dispatchAction(.loadNextPage)
     
     //Then
     _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)
@@ -189,7 +189,7 @@ final class CountryListStoreTests: XCTestCase {
       .store(in: &subscriptions)
     
     // When
-    store.onEvent(.loadFirst)
+    store.dispatchAction(.loadFirstPage)
     
     //Then
     _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)

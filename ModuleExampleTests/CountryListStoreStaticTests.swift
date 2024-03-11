@@ -4,26 +4,28 @@ import Combine
 
 final class CountryListStoreStaticTests: XCTestCase {
   
-  func testExcludesLoadNextEventIfAlreadyLoading() {
+  func testExcludesLoadNextActionIfAlreadyLoading() {
     // Given
     let state = CountryList.State.initial.reduced(with: .loadNextPage)
     
     // When
-    let shouldInclude = CountryList.Store.shouldIncludeEvent(.loadNext, state: state)
+    let shouldInclude = CountryList.Store.shouldIncludeAction(
+      .loadNextPage, state: state
+    )
     
     // Then
     XCTAssertFalse(shouldInclude)
   }
   
-  func testExcludesLoadNextEventIfLoadedAll() {
+  func testExcludesLoadNextActionIfLoadedAll() {
     // Given
     let state = CountryList.State.initial.reduced(
       with: .didLoadPage(.init(page: 0, totalCount: 1, items: [.init(id: 0, name: "")]))
     )
     
     // When
-    let shouldInclude = CountryList.Store.shouldIncludeEvent(
-      .loadNext, state: state
+    let shouldInclude = CountryList.Store.shouldIncludeAction(
+      .loadNextPage, state: state
     )
     
     // Then
@@ -55,34 +57,34 @@ final class CountryListStoreStaticTests: XCTestCase {
     XCTAssertFalse(shouldInclude)
   }
   
-  func testCreatesLoadHeaderEventAfterDidLoadPageActionIfNoHeader() {
+  func testCreatesLoadHeaderActionAfterDidLoadPageActionIfNoHeader() {
     // Given
     let state = CountryList.State.initial.reduced(
       with: .didLoadPage(.init(page: 0, totalCount: 1, items: []))
     )
-    let expected = CountryList.Event.loadHeader(1)
+    let expected = CountryList.Action.loadHeader(1)
     
     // When
-    let event = CountryList.Store.createEventWithAction(
+    let action = CountryList.Store.createActionWithAction(
       .didLoadPage(.init(page: 0, totalCount: 1, items: [])), state: state
     )
     
     // Then
-    XCTAssertEqual(expected, event)
+    XCTAssertEqual(expected, action)
   }
   
-  func testDoesntCreateLoadHeaderEventAfterDidLoadPageActionIfHeaderPresent() {
+  func testDoesntCreateLoadHeaderActionAfterDidLoadPageActionIfHeaderPresent() {
     // Given
     let state = CountryList.State.initial
       .reduced(with: .didLoadPage(.init(page: 0, totalCount: 1, items: [])))
       .reduced(with: .didLoadHeader(""))
         
     // When
-    let event = CountryList.Store.createEventWithAction(
+    let action = CountryList.Store.createActionWithAction(
       .didLoadPage(.init(page: 0, totalCount: 1, items: [])), state: state
     )
     
     // Then
-    XCTAssertNil(event)
+    XCTAssertNil(action)
   }
 }
