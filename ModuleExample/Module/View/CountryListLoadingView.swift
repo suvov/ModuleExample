@@ -3,7 +3,7 @@ import SwiftUI
 struct CountryListLoadingView: View {
   var body: some View {
     CountryListView(model: .placeholder,
-                    onEvent: { _ in })
+                    onAction: { _ in })
       .redacted(reason: .placeholder)
       .disabled(true)
   }

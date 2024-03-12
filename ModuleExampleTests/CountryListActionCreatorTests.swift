@@ -20,7 +20,6 @@ final class CountryListActionCreatorTests: XCTestCase {
       countryService: countryService, unService: unService
     )
     let expectedActions: [CountryList.Action] = [
-      .loadFirstPage,
       .didLoadPage(.init(page: 0, totalCount: 0, items: []))
     ]
     
@@ -34,7 +33,6 @@ final class CountryListActionCreatorTests: XCTestCase {
       .store(in: &subscriptions)
     
     // Then
-    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)
     XCTAssertEqual(expectedActions, receivedActions)
   }
   
@@ -49,7 +47,6 @@ final class CountryListActionCreatorTests: XCTestCase {
       countryService: countryService, unService: unService
     )
     let expectedActions: [CountryList.Action] = [
-      .loadNextPage,
       .didLoadPage(.init(page: 1, totalCount: 0, items: []))
     ]
     
@@ -63,7 +60,6 @@ final class CountryListActionCreatorTests: XCTestCase {
       .store(in: &subscriptions)
     
     // Then
-    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)
     XCTAssertEqual(expectedActions, receivedActions)
   }
   
@@ -92,7 +88,6 @@ final class CountryListActionCreatorTests: XCTestCase {
       .store(in: &subscriptions)
     
     // Then
-    _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: 0.1)
     XCTAssertEqual(expectedActions, receivedActions)
   }
 }

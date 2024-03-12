@@ -7,7 +7,8 @@ enum CountryList {
       countryService: CountryService(),
       unService: UNService()
     )
-    let store = Store(actionCreator: actionCreator)
+    let reducer = Reducer(actionCreator: actionCreator)
+    let store = Store(reducer: reducer)
     let screen = Screen(store: store)
     let vc = UIHostingController(rootView: screen)
     vc.title = "Countries"

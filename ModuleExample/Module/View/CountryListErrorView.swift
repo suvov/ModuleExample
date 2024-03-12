@@ -2,7 +2,7 @@ import SwiftUI
 
 struct CountryListErrorView: View {
   let description: String
-  let onEvent: (CountryList.Event) -> Void
+  let onAction: (CountryList.Action) -> Void
 
   var body: some View {
     Text(description)
@@ -10,7 +10,7 @@ struct CountryListErrorView: View {
       .toolbar {
         Button("Reload",
                systemImage: "arrow.clockwise") {
-          onEvent(.loadFirst)
+          onAction(.loadFirstPage)
         }
         .tint(.primary)
       }
@@ -21,6 +21,6 @@ struct CountryListErrorView: View {
 
 #if DEBUG
   #Preview {
-    CountryListErrorView(description: "Error...", onEvent: { _ in })
+    CountryListErrorView(description: "Error...", onAction: { _ in })
   }
 #endif
