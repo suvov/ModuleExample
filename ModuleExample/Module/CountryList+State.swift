@@ -2,8 +2,8 @@ import Foundation
 
 extension CountryList {
   struct State: Equatable {
-    let pagination: Pagination
-    let screenState: ScreenState
+    var pagination: Pagination
+    var screenState: ScreenState
   }
 
   struct Pagination: Equatable {
@@ -34,42 +34,11 @@ extension CountryList.State {
   static var initial: Self {
     .init(pagination: .initial, screenState: .empty)
   }
-
-  var items: [CountryList.ItemModel] {
-    switch screenState {
-    case let .list(model):
-      return model.items
-    default:
-      return []
-    }
-  }
-
-  var isLoadingNextPage: Bool {
-    switch screenState {
-    case let .list(model):
-      return model.isLoadingNextPage
-    default:
-      return false
-    }
-  }
-
-  var header: String? {
-    switch screenState {
-    case let .list(model):
-      return model.header
-    default:
-      return nil
-    }
-  }
 }
 
 extension CountryList.Pagination {
   static var initial: Self {
     .init(totalCount: 0, currentPage: -1)
-  }
-
-  var next: Int {
-    currentPage + 1
   }
 }
 
@@ -98,6 +67,7 @@ extension CountryList.ScreenState: CustomDebugStringConvertible {
       "error: \(text)"
     case let .list(model):
       """
+      header: \(model.header ?? "nil"),
       .items: \(model.items.count),
       isLoadingNextPage: \(model.isLoadingNextPage)
       """

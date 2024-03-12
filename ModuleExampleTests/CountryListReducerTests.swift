@@ -1,112 +1,125 @@
+import Combine
 import XCTest
 @testable import ModuleExample
 
 final class CountryListReducerTests: XCTestCase {
+  private var subscriptions = Set<AnyCancellable>()
+  
+  override func setUp() {
+    subscriptions = []
+  }
   
   func testLoadFirstPage() {
     // Given
-    let initial = CountryList.State.initial
-    let expected = CountryList.State(pagination: .initial, screenState: .loading)
+    var actionCreator = CountryListActionCreatorMock()
+    let didLoadPageAction = CountryList.Action.didLoadPage(
+      .init(page: 0, totalCount: 0, items: [])
+    )
+    actionCreator.loadFirstPageResult = didLoadPageAction
+    let reducer = CountryList.Reducer(actionCreator: actionCreator)
+    var state = CountryList.State.initial
     
+    let expectedState = CountryList.State(
+      pagination: .initial, screenState: .loading
+    )
+    
+    let expectedActions = [didLoadPageAction]
+    
+    var actions = [CountryList.Action]()
+
     // When
-    let result = initial.reduced(with: .loadFirstPage)
+    reducer.reduce(state: &state, with: .loadFirstPage).sink { action in
+      actions.append(action)
+    }
+    .store(in: &subscriptions)
     
     //Then
-    XCTAssertEqual(expected, result)
+    XCTAssertEqual(expectedState, state)
+    XCTAssertEqual(expectedActions, actions)
   }
   
   func testLoadNextPage() {
     // Given
-    let items = [CountryList.ItemModel(id: 0, name: "")]
-    let loadedFirst = CountryList.State.initial.reduced(
-      with: .didLoadPage(.init(page: 0, totalCount: 1, items: items))
+    var actionCreator = CountryListActionCreatorMock()
+    let didLoadPageAction = CountryList.Action.didLoadPage(
+      .init(page: 1, totalCount: 2, items: [])
     )
-    let loadedHeader = loadedFirst.reduced(with: .didLoadHeader(""))
-    let expected = CountryList.State(
-      pagination: loadedHeader.pagination,
-      screenState: .list(.init(header: "", items: items, isLoadingNextPage: true))
+    actionCreator.loadNextPageResult = didLoadPageAction
+    let reducer = CountryList.Reducer(actionCreator: actionCreator)
+    var state = CountryList.State(
+      pagination: .init(totalCount: 2, currentPage: 0), 
+      screenState: .list(.init(header: nil, items: [], isLoadingNextPage: false))
     )
     
+    let expectedState = CountryList.State(
+      pagination: state.pagination, 
+      screenState: .list(.init(header: nil, items: [], isLoadingNextPage: true))
+    )
+    
+    let expectedActions = [didLoadPageAction]
+    
+    var actions = [CountryList.Action]()
+
     // When
-    let result = loadedHeader.reduced(with: .loadNextPage)
+    reducer.reduce(state: &state, with: .loadNextPage).sink { action in
+      actions.append(action)
+    }
+    .store(in: &subscriptions)
     
     //Then
-    XCTAssertEqual(expected, result)
+    XCTAssertEqual(expectedState, state)
+    XCTAssertEqual(expectedActions, actions)
   }
   
-  func testDidLoadFirstPage() {
+  func testLoadNextPageIgnoredBecauseAlreadyLoading() {
     // Given
-    let items = [CountryList.ItemModel(id: 0, name: "")]
-    let loadingFirst = CountryList.State.initial.reduced( with: .loadFirstPage)
-    let expected = CountryList.State(
-      pagination: .init(totalCount: 1, currentPage: 0),
-      screenState: .list(.init(header: nil, items: items, isLoadingNextPage: false))
+    let actionCreator = CountryListActionCreatorMock()
+    let reducer = CountryList.Reducer(actionCreator: actionCreator)
+    var state = CountryList.State(
+      pagination: .init(totalCount: 2, currentPage: 0),
+      screenState: .list(.init(header: nil, items: [], isLoadingNextPage: true))
     )
     
+    let expectedState = state
+    
+    let expectedActions: [CountryList.Action] = []
+    
+    var actions = [CountryList.Action]()
+
     // When
-    let result = loadingFirst.reduced(with: .didLoadPage(.init(page: 0, totalCount: 1, items: items)))
+    reducer.reduce(state: &state, with: .loadNextPage).sink { action in
+      actions.append(action)
+    }
+    .store(in: &subscriptions)
     
     //Then
-    XCTAssertEqual(expected, result)
+    XCTAssertEqual(expectedState, state)
+    XCTAssertEqual(expectedActions, actions)
   }
   
-  func testDidLoadNextPage() {
+  func testLoadNextPageIgnoredBecauseLoadedAll() {
     // Given
-    let firstPageItems = [CountryList.ItemModel(id: 0, name: "")]
-    let secondPageItems = [CountryList.ItemModel(id: 1, name: "")]
-    let loadedFirst = CountryList.State.initial.reduced(
-      with: .didLoadPage(.init(page: 0, totalCount: 2, items: firstPageItems))
-    )
-    let expected = CountryList.State(
-      pagination: .init(totalCount: 2, currentPage: 1),
-      screenState: .list(
-        .init(header: nil,
-              items: firstPageItems + secondPageItems,
-              isLoadingNextPage: false)
-      )
+    let actionCreator = CountryListActionCreatorMock()
+    let reducer = CountryList.Reducer(actionCreator: actionCreator)
+    var state = CountryList.State(
+      pagination: .init(totalCount: 0, currentPage: 0),
+      screenState: .list(.init(header: nil, items: [], isLoadingNextPage: false))
     )
     
+    let expectedState = state
+    
+    let expectedActions: [CountryList.Action] = []
+    
+    var actions = [CountryList.Action]()
+
     // When
-    let result = loadedFirst.reduced(
-      with: .didLoadPage(
-        .init(page: 1, totalCount: 2, items: secondPageItems)
-      )
-    )
+    reducer.reduce(state: &state, with: .loadNextPage).sink { action in
+      actions.append(action)
+    }
+    .store(in: &subscriptions)
     
     //Then
-    XCTAssertEqual(expected, result)
-  }
-  
-  func testDidLoadHeader() {
-    // Given
-    let items = [CountryList.ItemModel(id: 0, name: "")]
-    let loadedFirst = CountryList.State.initial.reduced(
-      with: .didLoadPage(.init(page: 0, totalCount: 1, items: items))
-    )
-    let expected = CountryList.State(
-      pagination: .init(totalCount: 1, currentPage: 0),
-      screenState: .list(.init(header: "header", items: items, isLoadingNextPage: false))
-    )
-    
-    // When
-    let result = loadedFirst.reduced(with: .didLoadHeader("header"))
-    
-    //Then
-    XCTAssertEqual(expected, result)
-  }
-  
-  func testError() {
-    // Given
-    let initial = CountryList.State.initial
-    
-    let expected = CountryList.State.init(
-      pagination: .initial, screenState: .error("error")
-    )
-    
-    // When
-    let result = initial.reduced(with: .error("error"))
-    
-    //Then
-    XCTAssertEqual(expected, result)
+    XCTAssertEqual(expectedState, state)
+    XCTAssertEqual(expectedActions, actions)
   }
 }

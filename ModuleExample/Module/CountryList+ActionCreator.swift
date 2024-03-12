@@ -19,13 +19,11 @@ extension CountryList {
 
     func loadFirstPage() -> AnyPublisher<Action, Never> {
       loadCountries(page: 0)
-        .prepend(.loadFirstPage)
         .eraseToAnyPublisher()
     }
 
     func loadNextPage(_ page: Int) -> AnyPublisher<Action, Never> {
       loadCountries(page: page)
-        .prepend(.loadNextPage)
         .eraseToAnyPublisher()
     }
 
